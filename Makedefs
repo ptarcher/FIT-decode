@@ -1,0 +1,148 @@
+#******************************************************************************
+#
+# makedefs - Definitions common to all makefiles.
+# Author:         Paul Archer
+# Creation Date:  January, 2008      
+#
+# This file is the property of UHS Systems Pty Ltd.
+# It may not be copied, transmitted, or distributed
+# without the express, prior, and written authorisation
+# of UHS Systems Pty Ltd.
+# Copyright (c) 2008 UHS Systems Pty Ltd.
+# All rights reserved.
+#
+#
+# THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
+# OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
+# LMI SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
+# CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+#
+#******************************************************************************
+
+#******************************************************************************
+#
+# Get the operating system name.  If this is Cygwin, the .d files will be
+# munged to convert c: into /cygdrive/c so that "make" will be happy with the
+# auto-generated dependencies.
+#
+#******************************************************************************
+os:=${shell uname -s}
+
+#******************************************************************************
+#
+# The compiler to be used.
+#
+#******************************************************************************
+ifndef COMPILER
+COMPILER=gcc
+endif
+
+#******************************************************************************
+#
+# The debugger to be used.
+#
+#******************************************************************************
+ifndef DEBUGGER
+DEBUGGER=gdb
+endif
+
+#******************************************************************************
+#
+# Definitions for using GCC.
+#
+#******************************************************************************
+ifeq (${COMPILER}, gcc)
+
+#
+# The command for calling the compiler.
+#
+CC=gcc
+
+#
+# The command for calling the library archiver.
+#
+AR=ar
+
+#
+# The command for calling the linker.
+#
+LD=gcc
+
+#
+# The flags passed to the linker.
+#
+#LDFLAGS= #-Map $(BUILD)/out.map
+LDFLAGS=
+
+endif
+
+#******************************************************************************
+#
+# The rule for building the object file from each C source file.
+#
+#******************************************************************************
+${BUILD}/objs/%.o: %.c Makefile Makedefs Makefile.list
+	@mkdir -p $(dir $(@))
+	@if [ 'x${VERBOSE}' = x ];                               \
+	 then                                                    \
+	     echo "  CC    ${<}";                                \
+	 else                                                    \
+	     echo ${CC} ${CFLAGS} -D${COMPILER} -o ${@} -c ${<}; \
+	 fi
+	@${CC} ${CFLAGS} -D${COMPILER} -o ${@} -c ${<}
+ifneq ($(findstring CYGWIN, ${os}), )
+	@perl -i.bak -p -e 's/[Cc]:/\/cygdrive\/c/g' ${@:.o=.d}
+endif
+
+#******************************************************************************
+#
+# The rule for building the object file from each assembly source file.
+#
+#******************************************************************************
+${BUILD}/objs/%.o: %.s Makefile Makedefs Makefile.list
+	@mkdir -p $(dir $(@))
+	@if [ 'x${VERBOSE}' = x ];                               \
+	 then                                                    \
+	     echo "  CC    ${<}";                                \
+	 else                                                    \
+	     echo ${CC} ${AFLAGS} -D${COMPILER} -o ${@} -c ${<}; \
+	 fi
+	@${CC} ${AFLAGS} -D${COMPILER} -o ${@} -c ${<}
+ifneq ($(findstring CYGWIN, ${os}), )
+	@perl -i.bak -p -e 's/[Cc]:/\/cygdrive\/c/g' ${@:.o=.d}
+endif
+
+#******************************************************************************
+#
+# The rule for creating an object library.
+#
+#******************************************************************************
+${BUILD}/%.a:
+	@mkdir -p $(dir $(@))
+	@if [ 'x${VERBOSE}' = x ];     \
+	 then                          \
+	     echo "  AR    ${@}";      \
+	 else                          \
+	     echo ${AR} -cr ${@} ${^}; \
+	 fi
+	@${AR} -cr ${@} ${^}
+
+#******************************************************************************
+#
+# The rule for linking the application.
+#
+#******************************************************************************
+${BUILD}/fitdecode:
+	@mkdir -p $(dir $(@))
+	@if [ 'x${VERBOSE}' = x ]; \
+	 then                      \
+	     echo "  LD    ${@}";  \
+	 fi
+	@if [ 'x${VERBOSE}' != x ];                           \
+	 then                                                 \
+	     echo ${LD} ${LDFLAGSgcc_${notdir ${@:.elf=}}}    \
+					${LDFLAGS} -o ${@} ${^};			  \
+	 fi
+	@${LD} ${LDFLAGSgcc_${notdir ${@:.elf=}}}             \
+	       ${LDFLAGS} -o ${@} ${^}               

@@ -1,0 +1,48 @@
+#******************************************************************************
+#
+# Makefile.list - A List of files for compilation
+# Author:         Paul Archer
+# Creation Date:  August, 2008
+#
+# This file is the property of UHS Systems Pty Ltd.
+# It may not be copied, transmitted, or distributed
+# without the express, prior, and written authorisation
+# of UHS Systems Pty Ltd.
+# Copyright (c) 2007 UHS Systems Pty Ltd.
+# All rights reserved.
+#
+# THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
+# OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
+# LMI SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
+# CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+#
+#******************************************************************************
+
+#####################################
+# Directories
+#####################################
+
+VPATH := src
+VPATH += src/garmin
+
+INCLUDE_DIRS=-I include
+
+#####################################
+# C Files
+#####################################
+
+C_FILES :=						\
+	main.c						\
+	print_csv.c				    \
+
+GARMIN_C_FILES :=			    \
+	fit.c						\
+	fit_definitions.c			\
+
+C_OBJS :=           			\
+	$(C_FILES:.c=.o)            \
+	$(GARMIN_C_FILES:.c=.o)            
+
+OBJS := 						\
+	$(addprefix $(BUILD)/objs/, $(C_OBJS))							
