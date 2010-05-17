@@ -36,9 +36,9 @@ struct fit_record_data file_creator_data[] = {
 struct fit_record_data event_data[] = {
     DATA_RECORD(struct fit_event, timestamp,     253, 1, "", TYPE_TIME),
     DATA_RECORD(struct fit_event, timer_trigger, 3,   1, "", TYPE_UINT32),
-    DATA_RECORD(struct fit_event, event,         0,   1, "", TYPE_UINT8),
-    DATA_RECORD(struct fit_event, event_type,    1,   1, "", TYPE_UINT8),
-    DATA_RECORD(struct fit_event, event_group,   4,   1, "", TYPE_UINT8),
+    DATA_RECORD(struct fit_event, event,         0,   1, "", TYPE_ENUM),
+    DATA_RECORD(struct fit_event, event_type,    1,   1, "", TYPE_ENUM),
+    DATA_RECORD(struct fit_event, event_group,   4,   1, "", TYPE_ENUM),
 };
 
 struct fit_record_data device_info_data[] = {
@@ -97,8 +97,8 @@ struct fit_record_data session_data[] = {
     DATA_RECORD(struct fit_session, total_descent,       23, 1, "m", TYPE_UINT16),
     DATA_RECORD(struct fit_session, first_lap_index,     25, 1, "", TYPE_UINT16),
     DATA_RECORD(struct fit_session, num_laps,            26, 1, "", TYPE_UINT16),
-    DATA_RECORD(struct fit_session, event,               0, 1, "", TYPE_UINT8),
-    DATA_RECORD(struct fit_session, event_type,          1, 1, "", TYPE_UINT8),
+    DATA_RECORD(struct fit_session, event,               0, 1, "", TYPE_ENUM),
+    DATA_RECORD(struct fit_session, event_type,          1, 1, "", TYPE_ENUM),
     DATA_RECORD(struct fit_session, sport,               5, 1, "", TYPE_ENUM),
     DATA_RECORD(struct fit_session, sub_sport,           6, 1, "", TYPE_ENUM),
     DATA_RECORD(struct fit_session, avg_heart_rate,      16, 1, "bpm", TYPE_UINT8),
@@ -131,14 +131,14 @@ struct fit_record_data lap_data[] = {
     DATA_RECORD(struct fit_lap, max_power,           20, 1, "W", TYPE_UINT16),
     DATA_RECORD(struct fit_lap, total_ascent,        21, 1, "m", TYPE_UINT16),
     DATA_RECORD(struct fit_lap, total_descent,       22, 1, "m", TYPE_UINT16),
-    DATA_RECORD(struct fit_lap, event,               0, 1, "", TYPE_UINT8),
-    DATA_RECORD(struct fit_lap, event_type,          1, 1, "", TYPE_UINT8),
+    DATA_RECORD(struct fit_lap, event,               0, 1, "", TYPE_ENUM),
+    DATA_RECORD(struct fit_lap, event_type,          1, 1, "", TYPE_ENUM),
     DATA_RECORD(struct fit_lap, avg_heart_rate,      15, 1, "bpm", TYPE_UINT8),
     DATA_RECORD(struct fit_lap, max_heart_rate,      16, 1, "bpm", TYPE_UINT8),
     DATA_RECORD(struct fit_lap, avg_cadence,         17, 1, "", TYPE_UINT8),
     DATA_RECORD(struct fit_lap, max_cadence,         18, 1, "", TYPE_UINT8),
     DATA_RECORD(struct fit_lap, intensity,           23, 1, "", TYPE_UINT8),
-    DATA_RECORD(struct fit_lap, lap_trigger,         24, 1, "", TYPE_UINT8),
+    DATA_RECORD(struct fit_lap, lap_trigger,         24, 1, "", TYPE_ENUM),
     DATA_RECORD(struct fit_lap, sport,               25, 1, "", TYPE_ENUM),
 };
 
