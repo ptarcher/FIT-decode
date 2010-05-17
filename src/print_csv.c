@@ -12,7 +12,7 @@
 
 /*****************************************************************************/
 
-void printCSVHeader(csv_display_t display) {
+void print_csv_header(csv_display_t display) {
     int i;
 
 #if 0

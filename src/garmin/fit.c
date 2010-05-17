@@ -6,6 +6,7 @@
 #include "garmin/fit.h"
 #include "garmin/fit_types.h"
 #include "print_csv.h"
+#include "print_xml.h"
 
 /*****************************************************************************/
 #define SIZEOFARRAY(a) (sizeof(a)/sizeof(a[0]))
@@ -98,8 +99,8 @@ struct fit_record_data session_data[] = {
     DATA_RECORD(struct fit_session, num_laps,            26, 1, "", TYPE_UINT16),
     DATA_RECORD(struct fit_session, event,               0, 1, "", TYPE_UINT8),
     DATA_RECORD(struct fit_session, event_type,          1, 1, "", TYPE_UINT8),
-    DATA_RECORD(struct fit_session, sport,               5, 1, "", TYPE_UINT8),
-    DATA_RECORD(struct fit_session, sub_sport,           6, 1, "", TYPE_UINT8),
+    DATA_RECORD(struct fit_session, sport,               5, 1, "", TYPE_ENUM),
+    DATA_RECORD(struct fit_session, sub_sport,           6, 1, "", TYPE_ENUM),
     DATA_RECORD(struct fit_session, avg_heart_rate,      16, 1, "bpm", TYPE_UINT8),
     DATA_RECORD(struct fit_session, max_heart_rate,      17, 1, "bpm", TYPE_UINT8),
     DATA_RECORD(struct fit_session, avg_cadence,         18, 1, "", TYPE_UINT8),
@@ -138,7 +139,7 @@ struct fit_record_data lap_data[] = {
     DATA_RECORD(struct fit_lap, max_cadence,         18, 1, "", TYPE_UINT8),
     DATA_RECORD(struct fit_lap, intensity,           23, 1, "", TYPE_UINT8),
     DATA_RECORD(struct fit_lap, lap_trigger,         24, 1, "", TYPE_UINT8),
-    DATA_RECORD(struct fit_lap, sport,               25, 1, "", TYPE_UINT8),
+    DATA_RECORD(struct fit_lap, sport,               25, 1, "", TYPE_ENUM),
 };
 
 struct fit_record_data activity_data[] = {
@@ -154,6 +155,7 @@ struct fit_record_data activity_data[] = {
 
 
 /*****************************************************************************/
+#if 0
 void print_record_data(void *data, struct fit_record_data *record, int nelms) {
     int i;
     uintptr_t ptr;
@@ -284,25 +286,6 @@ void print_header(struct fit_header *hdr) {
     printf("\n");
 }
 
-int check_header(struct fit_header *hdr) {
-    if (hdr->h_len != sizeof(*hdr)) {
-        fprintf(stderr, 
-            "Not a .FIT header (%d != header_length = %d)\n",
-            hdr->h_len,
-            sizeof(*hdr));
-        exit(1);
-    } else if (0) {
-#define FIT_SIGNATURE ".FIT"
-
-        fprintf(stderr, 
-            "Not a .FIT header (%d != signature '.FIT')\n",
-            hdr->h_len);
-        exit(1);
-    }
-
-    return 0;
-}
-
 void print_field_desc(struct fit_field_desc *field) {
     printf("index = %d, size = %d, field_type = %d\n", 
         field->index, field->size, field->type);
@@ -326,6 +309,27 @@ void print_record_hdr(uint8_t record_hdr) {
         printf("COMPRESSED_TIMESTAMP\n");
     }
 }
+#endif
+int check_header(struct fit_header *hdr) {
+    if (hdr->h_len != sizeof(*hdr)) {
+        fprintf(stderr, 
+            "Not a .FIT header (%d != header_length = %d)\n",
+            hdr->h_len,
+            sizeof(*hdr));
+        exit(1);
+    } else if (0) {
+#define FIT_SIGNATURE ".FIT"
+
+        fprintf(stderr, 
+            "Not a .FIT header (%d != signature '.FIT')\n",
+            hdr->h_len);
+        exit(1);
+    }
+
+    return 0;
+}
+
+
 
 void fetch_record_definition(uint8_t record_num) {
     int nelms;
@@ -459,7 +463,7 @@ int fit_process_file(void) {
         if ((nelms = fread(&record_hdr, sizeof(record_hdr), 1, fp)) != 1) {
         }
         nbytes += sizeof(record_hdr);
-        print_record_hdr(record_hdr);
+        //print_record_hdr(record_hdr);
 
         if (record_hdr & RECORD_DEFINITION_MESSAGE_HDR) {
             /* The record first contains a definition */
@@ -489,9 +493,13 @@ int fit_process_file(void) {
             {
                 //struct fit_record *record = (struct fit_record *) array;
                 if (display == DISPLAY_RECORDS) {
-                    print_csv_record_data(array, record_data,
+                    print_xml_open_tag("record", stdout, 1);
+                    printf("\n");
+                    print_xml_record_data(array, record_data,
+                            SIZEOFARRAY(record_data), stdout, 2);
+                    print_xml_close_tag("record", stdout, 1);
+                    printf("\n");
                     //print_record_data(array, record_data,
-                            SIZEOFARRAY(record_data));
                 }
             }
             break;
@@ -500,8 +508,12 @@ int fit_process_file(void) {
             {
                 //struct fit_lap *lap = (struct fit_lap *) array;
                 if (display == DISPLAY_LAPS) {
-                    print_csv_record_data(array, lap_data,
-                            SIZEOFARRAY(lap_data));
+                    print_xml_open_tag("lap", stdout, 1);
+                    printf("\n");
+                    print_xml_record_data(array, lap_data, 
+                            SIZEOFARRAY(lap_data), stdout, 2);
+                    print_xml_close_tag("lap", stdout, 1);
+                    printf("\n");
                 }
             }
             break;

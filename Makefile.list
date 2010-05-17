@@ -35,6 +35,7 @@ INCLUDE_DIRS=-I include
 C_FILES :=						\
 	main.c						\
 	print_csv.c				    \
+	print_xml.c				    \
 
 GARMIN_C_FILES :=			    \
 	fit.c						\

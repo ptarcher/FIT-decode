@@ -11,6 +11,7 @@ typedef enum {
     TYPE_UINT8,
     TYPE_UINT16,
     TYPE_UINT32,
+    TYPE_ENUM,
     TYPE_TIME,
     TYPE_STRING,
     TYPE_POS,
