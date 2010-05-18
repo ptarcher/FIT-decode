@@ -6,39 +6,45 @@
 #include "garmin/garmin.h"
 #include "garmin/fit.h"
 #include "print_xml.h"
+#include "print_csv.h"
 
 /*****************************************************************************/
 static void print_spaces(FILE *fp, int spaces);
 
 #define SIZEOFARRAY(a) (sizeof(a)/sizeof(a[0]))
 
+extern csv_display_t display;
+
 /*****************************************************************************/
 
-void print_xml_header() {
-    //int i;
-
-#if 0
+void print_xml_header(void) {
     switch(display) {
         case DISPLAY_LAPS:
-            for (i = 0; i < SIZEOFARRAY(lap_data); i++) {
-                printf("%s%s", lap_data[i].label, i + 1 < SIZEOFARRAY(lap_data) ? "," : "");
-            }
-            printf("\n");
+            print_xml_open_tag("laps", stdout, 0);
             break;
         case DISPLAY_SESSIONS:
-            for (i = 0; i < SIZEOFARRAY(session_data); i++) {
-                printf("%s%s", session_data[i].label, i + 1 < SIZEOFARRAY(session_data) ? "," : "");
-            }
-            printf("\n");
+            print_xml_open_tag("sessions", stdout, 0);
             break;
-        case DISPLAY_RECORDS;
-            for (i = 0; i < SIZEOFARRAY(record_data); i++) {
-                printf("%s%s", record_data[i].label, i + 1 < SIZEOFARRAY(record_data) ? "," : "");
-            }
-            printf("\n");
+        case DISPLAY_RECORDS:
+            print_xml_open_tag("records", stdout, 0);
             break;
     }
-#endif
+    printf("\n");
+}
+
+void print_xml_footer(void) {
+    switch(display) {
+        case DISPLAY_LAPS:
+            print_xml_close_tag("laps", stdout, 0);
+            break;
+        case DISPLAY_SESSIONS:
+            print_xml_close_tag("sessions", stdout, 0);
+            break;
+        case DISPLAY_RECORDS:
+            print_xml_close_tag("records", stdout, 0);
+            break;
+    }
+    printf("\n");
 }
 
 void print_xml_record_data(void *data, struct fit_record_data *record, int nelms, FILE *f, int spaces) {

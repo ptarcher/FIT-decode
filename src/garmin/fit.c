@@ -454,9 +454,7 @@ int fit_process_file(void) {
         exit(1);
     }
 
-#if 0
-        printf("timestamp,postion_lat,postion_long,distance, time_from_course,altitude,speed,power,grade,heart_rate,cadence,resistance,temperature\n");
-#endif
+    print_xml_header();
 
     while (nbytes < hdr.file_size) {
         uint8_t record_hdr;
@@ -616,6 +614,8 @@ int fit_process_file(void) {
     #endif
 
     fclose(fp);
+
+    print_xml_footer();
 
     return 0;
 }
