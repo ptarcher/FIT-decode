@@ -520,8 +520,12 @@ int fit_process_file(void) {
             {
                 //struct fit_session *session = (struct fit_session *) array;
                 if (display == DISPLAY_SESSIONS) {
-                    print_csv_record_data(array, session_data,
-                            SIZEOFARRAY(session_data));
+                    print_xml_open_tag("session", stdout, 1);
+                    printf("\n");
+                    print_xml_record_data(array, session_data,
+                            SIZEOFARRAY(session_data), stdout, 2);
+                    print_xml_close_tag("session", stdout, 1);
+                    printf("\n");
                 }
             }
             break;
