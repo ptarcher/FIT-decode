@@ -313,7 +313,7 @@ void print_record_hdr(uint8_t record_hdr) {
 int check_header(struct fit_header *hdr) {
     if (hdr->h_len != sizeof(*hdr)) {
         fprintf(stderr, 
-            "Not a .FIT header (%d != header_length = %d)\n",
+            "Not a .FIT header (%d != header_length = %ld)\n",
             hdr->h_len,
             sizeof(*hdr));
         exit(1);
